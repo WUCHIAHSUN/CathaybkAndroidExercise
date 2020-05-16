@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -14,11 +15,11 @@ import java.util.ArrayList;
 
 public class ListAdapter extends RecyclerView.Adapter {
 
-    private ArrayList<String> titleList = new ArrayList<>();
+    private UsersListData[] usersListData;
     private CallbackListener callbackListener;
 
-    public ListAdapter(ArrayList<String> titleList, CallbackListener callbackListener){
-        this.titleList.addAll(titleList);
+    public ListAdapter(UsersListData[] usersListData, CallbackListener callbackListener){
+        this.usersListData = usersListData;
         this.callbackListener = callbackListener;
     }
     @NonNull
@@ -31,8 +32,7 @@ public class ListAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         ViewHolder viewHolder = (ViewHolder)holder;
-        String title = titleList.get(position);
-        viewHolder.tvTitle.setText(title);
+        viewHolder.name.setText(usersListData[position].getLogin());
 
         viewHolder.mainLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,19 +44,19 @@ public class ListAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
-        return titleList.size();
+        return usersListData.length;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView tvTitle;
+        private TextView name;
         private ImageView imageView;
-        private RelativeLayout mainLayout;
+        private LinearLayout mainLayout;
         public ViewHolder(View itemView) {
             super(itemView);
             mainLayout = itemView.findViewById(R.id.main_layout);
             imageView = itemView.findViewById(R.id.title_icon);
-            tvTitle = itemView.findViewById(R.id.name);
+            name = itemView.findViewById(R.id.name);
         }
     }
 }
