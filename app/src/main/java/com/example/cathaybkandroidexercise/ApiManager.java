@@ -1,16 +1,11 @@
 package com.example.cathaybkandroidexercise;
 
 import android.annotation.SuppressLint;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Build;
-
 import androidx.annotation.RequiresApi;
-
 import com.google.gson.Gson;
-
 import java.io.IOException;
-import java.util.ArrayList;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;

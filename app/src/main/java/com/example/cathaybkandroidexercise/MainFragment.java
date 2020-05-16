@@ -1,7 +1,9 @@
 package com.example.cathaybkandroidexercise;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +14,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.BitSet;
+
 public class MainFragment extends Fragment implements CallbackListener, ApiCallback{
     private Context context;
     private RecyclerView recyclerView;
+
     public MainFragment(Context context){
         this.context = context;
     }
@@ -56,7 +61,8 @@ public class MainFragment extends Fragment implements CallbackListener, ApiCallb
     }
 
     private void userListSuccess(UsersListData[] usersListData){
-        ListAdapter listAdapter = new ListAdapter(usersListData, this);
+        ListAdapter listAdapter = new ListAdapter(context, usersListData, this);
         recyclerView.setAdapter(listAdapter);
+
     }
 }

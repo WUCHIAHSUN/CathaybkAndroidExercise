@@ -34,4 +34,8 @@ public class UsersListData {
     public String getNode_id() {
         return node_id;
     }
+
+    public String getAvatar_url() {
+        return avatar_url;
+    }
 }
