@@ -42,6 +42,7 @@ public class ListAdapter extends RecyclerView.Adapter {
         ViewHolder viewHolder = (ViewHolder)holder;
         final UsersListData usersData = usersListDataArrayList.get(position);
         viewHolder.name.setText(usersData.getLogin());
+
         if (usersData.isSiteAdmin()){
             viewHolder.staff.setVisibility(View.VISIBLE);
         }else{

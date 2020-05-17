@@ -1,6 +1,8 @@
 package com.example.cathaybkandroidexercise;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -17,6 +19,7 @@ public class DetailFragment extends Fragment implements ApiCallback{
     private ImageView imageView, userPic;
     private TextView userName, bio, login, location, link, staff;
     private Utils utils;
+    private String do_data = "<No data>";
 
     public static DetailFragment getInstance(String name){
         DetailFragment detailFragment = new DetailFragment();
@@ -48,20 +51,21 @@ public class DetailFragment extends Fragment implements ApiCallback{
         location = view.findViewById(R.id.location);
         link = view.findViewById(R.id.blog);
         imageView.setOnClickListener(onClickListener);
+        link.setOnClickListener(onClickListener);
 
         return view;
     }
 
     private String setDataText(String text){
         if (text == null || text.isEmpty()){
-            return "<No data>";
+            return do_data;
         }
         return text;
     }
 
     private String setLinkText(TextView textView, String text){
         if (text == null || text.isEmpty()){
-            return "<No data>";
+            return do_data;
         }
         textView.setTextColor(getResources().getColor(R.color.link_blue));
         return text;
@@ -73,6 +77,11 @@ public class DetailFragment extends Fragment implements ApiCallback{
             switch (v.getId()){
                 case R.id.ic_close:
                     getFragmentManager().popBackStack();
+                    break;
+                case R.id.blog:
+                    if (!link.getText().equals(do_data)) {
+                        web(link.getText().toString());
+                    }
                     break;
             }
         }
@@ -107,5 +116,12 @@ public class DetailFragment extends Fragment implements ApiCallback{
         login.setText(setDataText(usersListData.getLogin()));
         location.setText(setDataText(usersListData.getLocation()));
         link.setText(setLinkText(link, usersListData.getBlog()));
+    }
+
+    private void web(String uri){
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(uri));
+        startActivity(intent);
     }
 }
