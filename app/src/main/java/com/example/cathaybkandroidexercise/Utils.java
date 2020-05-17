@@ -55,11 +55,11 @@ public class Utils {
             }.execute(url);
     }
 
-    public static Bitmap getBitmapMemory(String key){
+    public Bitmap getBitmapMemory(String key){
         return mMemoryCache.get(key);
     }
 
-    public static void setBitmapMemory(String key, Bitmap bitmap){
+    public void setBitmapMemory(String key, Bitmap bitmap){
         if (getBitmapMemory(key) == null){
             mMemoryCache.put(key, bitmap);
         }

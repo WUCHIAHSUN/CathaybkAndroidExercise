@@ -22,6 +22,19 @@ public class UsersListData {
     private String received_events_url = "";
     private String type = "";
     private boolean site_admin;
+    private String name = "";
+    private String company = "";
+    private String blog = "";
+    private String location = "";
+    private String email = "";
+    private boolean hireable;
+    private String bio = "";
+    private int public_repos;
+    private int public_gists;
+    private int followers;
+    private int following;
+    private String created_at = "";
+    private String updated_at = "";
 
     public String getLogin() {
         return login;
@@ -37,5 +50,25 @@ public class UsersListData {
 
     public String getAvatar_url() {
         return avatar_url;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getBio() {
+        return bio;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public String getBlog() {
+        return blog;
+    }
+
+    public boolean isSiteAdmin() {
+        return site_admin;
     }
 }

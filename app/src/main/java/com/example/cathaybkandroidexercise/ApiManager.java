@@ -3,6 +3,8 @@ package com.example.cathaybkandroidexercise;
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.util.Log;
+
 import androidx.annotation.RequiresApi;
 import com.google.gson.Gson;
 import java.io.IOException;
@@ -24,6 +26,13 @@ public class ApiManager {
 
     public void getUsersList(int tag, int since, ApiCallback apiCallback){
         Url = "https://api.github.com/users? + since=" + since;
+        mTag = tag;
+        this.apiCallback = apiCallback;
+        new ApiTask().execute(Url);
+    }
+
+    public void getSingleUser(int tag, String name, ApiCallback apiCallback){
+        Url = "https://api.github.com/users/" + name;
         mTag = tag;
         this.apiCallback = apiCallback;
         new ApiTask().execute(Url);
@@ -62,11 +71,15 @@ public class ApiManager {
     }
 
     private Data getJson(String json){
+        Log.d("Json: ", json);
         Gson gson = new Gson();
         Object jsonString;
         switch (mTag){
             case ApiManagerKey.GET_USERS_LIST:
                 jsonString = gson.fromJson(json, UsersListData[].class);
+                break;
+            case ApiManagerKey.GET_USER_DETAIL:
+                jsonString = gson.fromJson(json, UsersListData.class);
                 break;
             default:
                 jsonString = null;

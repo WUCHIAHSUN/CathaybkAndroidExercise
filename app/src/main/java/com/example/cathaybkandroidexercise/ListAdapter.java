@@ -39,17 +39,23 @@ public class ListAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         ViewHolder viewHolder = (ViewHolder)holder;
-        viewHolder.name.setText(usersListData[position].getLogin());
-        Bitmap bitmap = utils.getBitmapMemory(usersListData[position].getAvatar_url());
+        final UsersListData usersData = usersListData[position];
+        viewHolder.name.setText(usersData.getLogin());
+        if (usersData.isSiteAdmin()){
+            viewHolder.staff.setVisibility(View.VISIBLE);
+        }else{
+            viewHolder.staff.setVisibility(View.GONE);
+        }
+        Bitmap bitmap = utils.getBitmapMemory(usersData.getAvatar_url());
         if (bitmap != null){
             viewHolder.imageView.setImageBitmap(bitmap);
         }else{
-            utils.loadBitmap(viewHolder.imageView, usersListData[position].getAvatar_url());
+            utils.loadBitmap(viewHolder.imageView, usersData.getAvatar_url());
         }
         viewHolder.mainLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                callbackListener.ItemDetail();
+                callbackListener.ItemDetail(usersData.getLogin());
             }
         });
     }
@@ -61,12 +67,13 @@ public class ListAdapter extends RecyclerView.Adapter {
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView name;
+        private TextView name, staff;
         private ImageView imageView;
         private LinearLayout mainLayout;
         public ViewHolder(View itemView) {
             super(itemView);
             mainLayout = itemView.findViewById(R.id.main_layout);
+            staff = itemView.findViewById(R.id.staff);
             imageView = itemView.findViewById(R.id.title_icon);
             name = itemView.findViewById(R.id.name);
         }

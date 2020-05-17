@@ -1,9 +1,7 @@
 package com.example.cathaybkandroidexercise;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,10 +9,10 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.BitSet;
 
 public class MainFragment extends Fragment implements CallbackListener, ApiCallback{
     private Context context;
@@ -43,8 +41,8 @@ public class MainFragment extends Fragment implements CallbackListener, ApiCallb
     }
 
     @Override
-    public void ItemDetail() {
-
+    public void ItemDetail(String name) {
+        gotoNextPage(DetailFragment.getInstance(name));
     }
 
     @Override
@@ -65,4 +63,12 @@ public class MainFragment extends Fragment implements CallbackListener, ApiCallb
         recyclerView.setAdapter(listAdapter);
 
     }
+
+    private void gotoNextPage(Fragment fragment){
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.addToBackStack(fragment.getClass().getName());
+        fragmentTransaction.add(R.id.fragment, fragment).commit();
+    }
+
 }
