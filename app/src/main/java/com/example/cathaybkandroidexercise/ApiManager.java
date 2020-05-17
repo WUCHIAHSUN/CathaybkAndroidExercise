@@ -25,7 +25,7 @@ public class ApiManager {
     }
 
     public void getUsersList(int tag, int since, ApiCallback apiCallback){
-        Url = "https://api.github.com/users? + since=" + since;
+        Url = "https://api.github.com/users?since=" + since;
         mTag = tag;
         this.apiCallback = apiCallback;
         new ApiTask().execute(Url);

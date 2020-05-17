@@ -14,9 +14,15 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class MainFragment extends Fragment implements CallbackListener, ApiCallback{
     private Context context;
     private RecyclerView recyclerView;
+    private int since = 0;
+    private ListAdapter listAdapter;
+    private ArrayList<UsersListData> usersListDataArrayList;
 
     public MainFragment(Context context){
         this.context = context;
@@ -34,8 +40,9 @@ public class MainFragment extends Fragment implements CallbackListener, ApiCallb
         View view = inflater.inflate(R.layout.main_fragment, container, false);
 
         recyclerView = view.findViewById(R.id.list);
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        ApiManager.getInstance().getUsersList(ApiManagerKey.GET_USERS_LIST, 20, this);
+        usersListDataArrayList = new ArrayList<>();
+        setRecyclerView();
+        ApiManager.getInstance().getUsersList(ApiManagerKey.GET_USERS_LIST, since, this);
 
         return view;
     }
@@ -52,15 +59,34 @@ public class MainFragment extends Fragment implements CallbackListener, ApiCallb
                 case ApiManagerKey.GET_USERS_LIST:
                     UsersListData[] usersListData = (UsersListData[])data.getData();
                     userListSuccess(usersListData);
+                    since = usersListData[usersListData.length -1].getId() + 1;
                     break;
             }
         }
 
     }
 
+    private void setRecyclerView(){
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (!recyclerView.canScrollVertically(1) && usersListDataArrayList != null && usersListDataArrayList.size() < 100) {
+                    ApiManager.getInstance().getUsersList(ApiManagerKey.GET_USERS_LIST, since, MainFragment.this);
+                }
+            }
+        });
+    }
+
     private void userListSuccess(UsersListData[] usersListData){
-        ListAdapter listAdapter = new ListAdapter(context, usersListData, this);
-        recyclerView.setAdapter(listAdapter);
+        usersListDataArrayList.addAll(Arrays.asList(usersListData));
+        if (listAdapter == null) {
+            listAdapter = new ListAdapter(context, usersListDataArrayList, this);
+            recyclerView.setAdapter(listAdapter);
+        }else{
+            listAdapter.notifyDataSetChanged();
+        }
 
     }
 

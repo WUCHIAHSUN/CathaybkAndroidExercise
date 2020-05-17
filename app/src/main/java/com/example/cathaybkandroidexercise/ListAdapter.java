@@ -10,21 +10,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+
 public class ListAdapter extends RecyclerView.Adapter {
 
-    private UsersListData[] usersListData;
+    private ArrayList<UsersListData> usersListDataArrayList;
     private CallbackListener callbackListener;
     Context context;
     private Utils utils;
 
-    public ListAdapter(Context context, UsersListData[] usersListData, CallbackListener callbackListener){
-        this.usersListData = usersListData;
+    public ListAdapter(Context context, ArrayList<UsersListData> usersListDataArrayList, CallbackListener callbackListener){
+        this.usersListDataArrayList = usersListDataArrayList;
         this.callbackListener = callbackListener;
         this.context = context;
         utils = Utils.getInstance();
@@ -39,7 +40,7 @@ public class ListAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         ViewHolder viewHolder = (ViewHolder)holder;
-        final UsersListData usersData = usersListData[position];
+        final UsersListData usersData = usersListDataArrayList.get(position);
         viewHolder.name.setText(usersData.getLogin());
         if (usersData.isSiteAdmin()){
             viewHolder.staff.setVisibility(View.VISIBLE);
@@ -58,11 +59,16 @@ public class ListAdapter extends RecyclerView.Adapter {
                 callbackListener.ItemDetail(usersData.getLogin());
             }
         });
+        if (usersListDataArrayList.size() < 100 && position == usersListDataArrayList.size() - 1){
+            viewHolder.loading.setVisibility(View.VISIBLE);
+        }else{
+            viewHolder.loading.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public int getItemCount() {
-        return usersListData.length;
+        return usersListDataArrayList.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -70,12 +76,14 @@ public class ListAdapter extends RecyclerView.Adapter {
         private TextView name, staff;
         private ImageView imageView;
         private LinearLayout mainLayout;
+        private TextView loading;
         public ViewHolder(View itemView) {
             super(itemView);
             mainLayout = itemView.findViewById(R.id.main_layout);
             staff = itemView.findViewById(R.id.staff);
             imageView = itemView.findViewById(R.id.title_icon);
             name = itemView.findViewById(R.id.name);
+            loading = itemView.findViewById(R.id.loading);
         }
     }
 }
