@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,6 +24,7 @@ public class MainFragment extends Fragment implements CallbackListener, ApiCallb
     private int since = 0;
     private ListAdapter listAdapter;
     private ArrayList<UsersListData> usersListDataArrayList;
+    private boolean isLoading = false;
 
     public MainFragment(Context context){
         this.context = context;
@@ -42,6 +44,7 @@ public class MainFragment extends Fragment implements CallbackListener, ApiCallb
         recyclerView = view.findViewById(R.id.list);
         usersListDataArrayList = new ArrayList<>();
         setRecyclerView();
+        isLoading = true;
         ApiManager.getInstance().getUsersList(ApiManagerKey.GET_USERS_LIST, since, this);
 
         return view;
@@ -57,11 +60,14 @@ public class MainFragment extends Fragment implements CallbackListener, ApiCallb
         if (data != null){
             switch (tag){
                 case ApiManagerKey.GET_USERS_LIST:
+                    isLoading = false;
                     UsersListData[] usersListData = (UsersListData[])data.getData();
                     userListSuccess(usersListData);
                     since = usersListData[usersListData.length -1].getId() + 1;
                     break;
             }
+        }else{
+        Toast.makeText(getContext(), "操作太頻繁", Toast.LENGTH_LONG).show();
         }
 
     }
@@ -72,7 +78,8 @@ public class MainFragment extends Fragment implements CallbackListener, ApiCallb
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if (!recyclerView.canScrollVertically(1) && usersListDataArrayList != null && usersListDataArrayList.size() < 100) {
+                if (!isLoading && !recyclerView.canScrollVertically(1) && usersListDataArrayList != null && usersListDataArrayList.size() < 100) {
+                    isLoading = true;
                     ApiManager.getInstance().getUsersList(ApiManagerKey.GET_USERS_LIST, since, MainFragment.this);
                 }
             }

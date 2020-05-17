@@ -10,15 +10,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.squareup.picasso.Picasso;
+
 public class DetailFragment extends Fragment implements ApiCallback{
     private ImageView imageView, userPic;
     private TextView userName, bio, login, location, link, staff;
-    private Utils utils;
     private String do_data = "<No data>";
 
     public static DetailFragment getInstance(String name){
@@ -41,7 +43,6 @@ public class DetailFragment extends Fragment implements ApiCallback{
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.detail_layout, container, false);
-        utils = Utils.getInstance();
         imageView = view.findViewById(R.id.ic_close);
         userPic = view.findViewById(R.id.user_pic);
         userName = view.findViewById(R.id.user_name);
@@ -67,7 +68,9 @@ public class DetailFragment extends Fragment implements ApiCallback{
         if (text == null || text.isEmpty()){
             return do_data;
         }
-        textView.setTextColor(getResources().getColor(R.color.link_blue));
+        if (getActivity() != null) {
+            textView.setTextColor(getActivity().getResources().getColor(R.color.link_blue));
+        }
         return text;
     }
 
@@ -89,21 +92,24 @@ public class DetailFragment extends Fragment implements ApiCallback{
 
     @Override
     public void onResult(int tag, Data data) {
-        switch (tag) {
-            case ApiManagerKey.GET_USER_DETAIL:
-                UsersListData usersListData = (UsersListData) data.getData();
-                detailSuccess(usersListData);
-                break;
+        if (data != null) {
+            switch (tag) {
+                case ApiManagerKey.GET_USER_DETAIL:
+                    UsersListData usersListData = (UsersListData) data.getData();
+                    detailSuccess(usersListData);
+                    break;
+            }
+        }else{
+            if (getContext() != null) {
+                Toast.makeText(getContext(), "操作太頻繁", Toast.LENGTH_LONG).show();
+            }
         }
     }
 
     private void detailSuccess(UsersListData usersListData){
-        Bitmap bitmap = utils.getBitmapMemory(usersListData.getAvatar_url());
-        if (bitmap != null){
-            userPic.setImageBitmap(bitmap);
-        }else{
-            utils.loadBitmap(userPic, usersListData.getAvatar_url());
-        }
+        Picasso.with(userPic.getContext()).cancelRequest(userPic);
+        Picasso.with(userPic.getContext()).load(usersListData.getAvatar_url()).transform(new CircleTransform()).into(userPic);
+
         userName.setText(setDataText(usersListData.getName()));
         if (usersListData.isSiteAdmin()){
             staff.setVisibility(View.VISIBLE);

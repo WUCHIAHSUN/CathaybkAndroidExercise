@@ -7,6 +7,10 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 
 import okhttp3.OkHttpClient;
@@ -74,6 +78,16 @@ public class ApiManager {
         Log.d("Json: ", json);
         Gson gson = new Gson();
         Object jsonString;
+        String message = null;
+        try {
+            JSONObject jresponse = new JSONObject(json);
+            message = jresponse.getString("message");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if (message != null) {
+            return null;
+        }
         switch (mTag){
             case ApiManagerKey.GET_USERS_LIST:
                 jsonString = gson.fromJson(json, UsersListData[].class);

@@ -15,6 +15,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 
 public class ListAdapter extends RecyclerView.Adapter {
@@ -22,13 +24,11 @@ public class ListAdapter extends RecyclerView.Adapter {
     private ArrayList<UsersListData> usersListDataArrayList;
     private CallbackListener callbackListener;
     Context context;
-    private Utils utils;
 
     public ListAdapter(Context context, ArrayList<UsersListData> usersListDataArrayList, CallbackListener callbackListener){
         this.usersListDataArrayList = usersListDataArrayList;
         this.callbackListener = callbackListener;
         this.context = context;
-        utils = Utils.getInstance();
     }
     @NonNull
     @Override
@@ -48,12 +48,9 @@ public class ListAdapter extends RecyclerView.Adapter {
         }else{
             viewHolder.staff.setVisibility(View.GONE);
         }
-        Bitmap bitmap = utils.getBitmapMemory(usersData.getAvatar_url());
-        if (bitmap != null){
-            viewHolder.imageView.setImageBitmap(bitmap);
-        }else{
-            utils.loadBitmap(viewHolder.imageView, usersData.getAvatar_url());
-        }
+        Picasso.with(viewHolder.imageView.getContext()).cancelRequest(viewHolder.imageView);
+        Picasso.with(viewHolder.imageView.getContext()).load(usersData.getAvatar_url()).transform(new CircleTransform()).into(viewHolder.imageView);
+
         viewHolder.mainLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
