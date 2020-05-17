@@ -4,6 +4,7 @@
 
 ## Features
 1.當API呼叫過於頻繁，API會回傳等候一段時間，UI顯示"操作太頻繁"
+
 2.當列表滑動到最下方時會顯示Loading...並載入下一頁的UsersList，當列表大於100筆則不再載入新的使用者
 
 ## 3rd party library
